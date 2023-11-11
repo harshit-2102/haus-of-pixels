@@ -1,0 +1,85 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= pageTitle %>
+  </title>
+  <!-- <link rel="manifest" href="/manifest.json" /> -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <script src="/jquery/jquery.min.js"></script>
+  <script src="/bootstrap/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-sm navbar-light bg-light mb-5">
+    <div class="container-md">
+      <a class="navbar-brand fw-semibold fs-3 fw-900" href="/dashboard">Haus of Pixels</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent" style="flex-grow: 0;">
+        <div class="me-auto mb-lg-0 ">
+          <%if(isAdmin) { %>
+
+            <h3 class="text-dark fw-semibold text-end h4">Welcome, <%= user.email %>
+            </h3>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-end">
+              <li class="nav-item d-flex justify-content-end mt-1">
+                <a class="btn btn-outline-success" href="/admin/dashboard">Users</a>
+              </li>
+              <li class="nav-item d-flex justify-content-end mt-1">
+                <a class="btn btn-outline-success ms-2" href="/admin/dashboard/photos">Photos</a>
+              </li>
+              <li class="nav-item d-flex justify-content-end mt-1">
+                <a class="btn btn-outline-success ms-2" href="/admin/dashboard/hashtags">Hashtags</a>
+              </li>
+              <li class="nav-item d-flex justify-content-end mt-1">
+                <a class="btn btn-outline-success ms-2" href="/logout">Logout</a>
+              </li>
+            </ul>
+            <%} else if(user) { %>
+              <h3 class="text-dark fw-semibold h4">Welcome, <%= user.email %>
+              </h3>
+              <div class="d-flex justify-content-end">
+                <a class="btn btn-outline-success me-2" href="/profile">Photos</a>
+                <a class="btn btn-outline-success me-2" href="/photo-details">Details</a>
+                <a class="btn btn-outline-success" href="/logout">Logout</a>
+              </div>
+              <% } else { %>
+                <div class="d-flex justify-content-end">
+                  <a class="btn btn-outline-success me-2" href="/">Login</a>
+                  <a class="btn btn-outline-success" href="/signup">Signup</a>
+                </div>
+                <% } %>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- <nav class="navbar navbar-expand-lg bg-body-tertiary mb-5">
+    <div class="container">
+      <a class="navbar-brand fw-semibold fs-3 fw-900" href="/dashboard">Haus of Pixels</a>
+      <div>
+        <% if(user) { %>
+          <h3 class="text-dark fw-semibold">Welcome, <%= user.email %>
+          </h3>
+          <div class="d-flex justify-content-end">
+            <a class="btn btn-outline-success me-2" href="/profile">Profile</a>
+            <a class="btn btn-outline-success" href="/logout">Logout</a>
+          </div>
+          <% } else { %>
+            <div class="d-flex justify-content-end">
+              <a class="btn btn-outline-success me-2" href="/">Login</a>
+              <a class="btn btn-outline-success" href="/signup">Signup</a>
+            </div>
+            <% } %>
+      </div>
+    </div>
+  </nav> -->

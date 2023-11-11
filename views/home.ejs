@@ -1,0 +1,216 @@
+<%- include('partials/header'); -%>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mt-3">
+        <form id="upload-single" enctype="multipart/form-data">
+          <h2 class="fw-bold">Upload Single Image</h2>
+          <label for="image">Add image</label>
+          <input type="file" class="form-control" id="image-input" name="photo" accept="image/jpeg, image/png, image/jpg" required />
+          <label for="hastags">Hastags</label>
+          <div class="hashtag-dropdown">
+            <div class="selected-hashtags">
+            </div>
+            <input type="text" class="form-control" id="hashtag-input" placeholder="Select hashtags...">
+            <ul class="hashtag-list">
+              <% for (let hastag of hastags) { %>
+                <li>#<%=hastag%>
+                </li>
+                <% } %>
+                  <!-- Add more hashtags as needed -->
+            </ul>
+          </div>
+
+          <div class="hastag error"></div>
+          <button type="submit" class="mt-3" id="submit-button">Upload</button>
+        </form>
+      </div>
+      <div class="col-md-6 mt-3">
+        <form id="upload-multiple" enctype="multipart/form-data">
+          <h2 class="fw-bold">Upload Multiple Images</h2>
+          <label for="image">Add images</label>
+          <input type="file" name="images" class="form-control" id="image-input-multiple" accept="image/jpeg, image/png" required multiple />
+          <label for="hastags">Hastags</label>
+          <div class="hashtag-dropdown-multiple">
+            <div class="selected-hashtags-multiple">
+            </div>
+            <input type="text" class="form-control" id="hashtag-input-multiple" placeholder="Select hashtags...">
+            <ul class="hashtag-list-multiple">
+              <% for (let hastag of hastags) { %>
+                <li>#<%=hastag%>
+                </li>
+                <% } %>
+                  <!-- Add more hashtags as needed -->
+            </ul>
+          </div>
+          <div class="hastag error"></div>
+          <button type="submit" class="mt-3">Upload Images</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer>Copyright 2023 by Haus of Pixels</footer>
+
+
+  <script>
+
+    const hashtagInput = document.getElementById('hashtag-input');
+    const hashtagList = document.querySelector('.hashtag-list');
+    hashtagList.style.display = 'none';
+    const selectedHashtags = document.querySelector('.selected-hashtags');
+    const selectedHashtagsList = [];
+
+    const hashtagInputMultiple = document.getElementById('hashtag-input-multiple');
+    const hashtagListMultiple = document.querySelector('.hashtag-list-multiple');
+    hashtagListMultiple.style.display = 'none';
+    const selectedHashtagsMultiple = document.querySelector('.selected-hashtags-multiple');
+    const selectedHashtagsMultipleList = [];
+
+    hashtagInput.addEventListener('input', () => {
+      const inputText = hashtagInput.value.toLowerCase();
+      const hashtags = Array.from(hashtagList.querySelectorAll('li'));
+
+      if (inputText) {
+        hashtagList.style.display = 'block';
+      } else {
+        hashtagList.style.display = 'none';
+      }
+
+      hashtags.forEach((hashtag) => {
+        const text = hashtag.textContent.toLowerCase();
+        if (text.includes(inputText)) {
+          hashtag.style.display = 'block';
+        } else {
+          hashtag.style.display = 'none';
+        }
+      });
+    });
+
+    hashtagInputMultiple.addEventListener('input', () => {
+      const inputText = hashtagInputMultiple.value.toLowerCase();
+      const hashtags = Array.from(hashtagListMultiple.querySelectorAll('li'));
+
+      if (inputText) {
+        hashtagListMultiple.style.display = 'block';
+      } else {
+        hashtagListMultiple.style.display = 'none';
+      }
+
+      hashtags.forEach((hashtag) => {
+        const text = hashtag.textContent.toLowerCase();
+        if (text.includes(inputText)) {
+          hashtag.style.display = 'block';
+        } else {
+          hashtag.style.display = 'none';
+        }
+      });
+    });
+
+    hashtagList.addEventListener('click', (event) => {
+      if (event.target.tagName === 'LI') {
+        const selectedHashtag = document.createElement('div');
+        selectedHashtag.textContent = event.target.textContent;
+        selectedHashtag.className = 'selected-hashtag';
+        selectedHashtags.appendChild(selectedHashtag);
+        selectedHashtagsList.push(event.target.textContent);
+        console.log(selectedHashtagsList);
+        hashtagInput.value = '';
+        hashtagList.style.display = 'none';
+      }
+    });
+
+    hashtagListMultiple.addEventListener('click', (event) => {
+      if (event.target.tagName === 'LI') {
+        const selectedHashtag = document.createElement('div');
+        selectedHashtag.textContent = event.target.textContent;
+        selectedHashtag.className = 'selected-hashtag';
+        selectedHashtagsMultiple.appendChild(selectedHashtag);
+        selectedHashtagsMultipleList.push(event.target.textContent);
+        console.log(selectedHashtagsMultipleList);
+        hashtagInputMultiple.value = '';
+        hashtagListMultiple.style.display = 'none';
+      }
+    });
+
+    selectedHashtags.addEventListener('click', (event) => {
+      if (event.target.tagName === 'DIV') {
+        var index = selectedHashtagsList.indexOf(event.target.textContent);
+        if (index > -1) {
+          selectedHashtagsList.splice(index, 1);
+        }
+        console.log(selectedHashtagsList);
+        event.target.remove();
+      }
+    });
+
+    selectedHashtagsMultiple.addEventListener('click', (event) => {
+      if (event.target.tagName === 'DIV') {
+        var index = selectedHashtagsMultipleList.indexOf(event.target.textContent);
+        if (index > -1) {
+          selectedHashtagsMultipleList.splice(index, 1);
+        }
+        console.log(selectedHashtagsMultipleList);
+        event.target.remove();
+      }
+    });
+
+    const formSingle = document.getElementById('upload-single');
+    formSingle.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const imageInput = document.getElementById('image-input');
+      const image = imageInput.files[0];
+      // console.log(image);
+
+      const formData = new FormData();
+      formData.append('photo', image);
+      formData.append('hashtags', JSON.stringify(selectedHashtagsList));
+
+      console.log(formData);
+
+      try {
+        const res = await fetch('/upload', {
+          method: 'POST',
+          body: formData,
+        });
+      }
+      catch (err) {
+        console.log(err);
+      }
+    });
+
+    const formMultiple = document.getElementById('upload-multiple');
+    formMultiple.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const imageInput = document.getElementById('image-input-multiple');
+      const images = imageInput.files;
+
+
+      const formData = new FormData();
+
+      for (let i = 0; i < images.length; i++) {
+        formData.append('images', images[i]);
+      }
+      formData.append('hashtagsMultiple', JSON.stringify(selectedHashtagsMultipleList));
+
+      // console.log(formData);
+
+      try {
+        const res = await fetch('/upload-multiple', {
+          method: 'POST',
+          body: formData,
+        });
+      }
+      catch (err) {
+        console.log(err);
+      }
+    });
+
+
+  </script>
+
+
+  </body>
+
+  </html>

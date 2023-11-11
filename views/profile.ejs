@@ -1,0 +1,23 @@
+<%- include('partials/header'); -%>
+
+    <div class="pb-3 mb-3 d-flex border-bottom container">
+        <h4 class="m-0 p-0 me-1">All Photos</h4>
+        <h5 class="m-0 p-0"> (<%= count %>)</h5>
+    </div>
+    <div class="container">
+            <div class="row d-flex m-0 border-bottom container p-0 pb-3">
+                <% for (let data of datas) { %>
+
+                    <div class="card col-6 col-sm-4 col-md-3 col-xl-2 p-1">
+                        <div class="profile-images profile-images-container"
+                            style="background-image: url('<%= data.imageUrl %>');"></div>
+                    </div>
+
+                    <% } %>
+            </div>
+    </div>
+
+
+
+
+    <%- include('partials/footer'); -%>

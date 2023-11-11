@@ -1,0 +1,77 @@
+<%- include('partials/header'); -%>
+
+  <form action="/login">
+    <h2 class="fw-bold">Login</h2>
+    <label for="email">Email</label>
+    <input type="text" class="form-control" name="email" required />
+    <div class="email error"></div>
+    <label for="password">Password</label>
+    <input type="password" class="form-control" name="password" required />
+    <div class="password error"></div>
+    <button class="mt-3">login</button>
+  </form>
+
+  <footer>Copyright 2023 by Haus of Pixels</footer>
+
+  <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+
+  <script>
+
+    var firebaseConfig = {
+      apiKey: "AIzaSyCQDgj24wmZvSCF-J9li9_Pj6s28rwaI_k",
+      authDomain: "pixelate-app-de1e6.firebaseapp.com",
+      projectId: "pixelate-app-de1e6",
+      storageBucket: "pixelate-app-de1e6.appspot.com",
+      messagingSenderId: "559625283256",
+      appId: "1:559625283256:web:1b05b29e7617e0aa35764d",
+      measurementId: "G-NN7HSYRM19"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
+
+    const form = document.querySelector('form');
+    const emailError = document.querySelector('.email.error');
+    const passError = document.querySelector('.password.error');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // reset errors
+      emailError.textContent = '';
+      passError.textContent = '';
+
+      // get values
+      const email = form.email.value;
+      const password = form.password.value;
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(({ user }) => {
+          return user.getIdToken().then((idToken) => {
+            return fetch('/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ idToken, email })
+            });
+          })
+        }).then(() => {
+          return firebase.auth().signOut();
+        })
+        .then(() => {
+          window.location.assign('/dashboard');
+        }).catch((err) => {
+          console.log(err);
+        })
+      return false;
+    });
+  </script>
+
+  </body>
+
+  </html>
