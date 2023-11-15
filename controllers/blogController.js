@@ -9,12 +9,12 @@ const fs = require('fs');
 
 admin.initializeApp({
     credential: admin.credential.cert(credentials),
-    databaseURL: 'https://pixelate-app-de1e6-default-rtdb.firebaseio.com/',
+    databaseURL: 'https://haus-of-pixels-default-rtdb.firebaseio.com/',
 });
 
 const storage = admin.storage();
 const db = admin.database();
-const bucketName = 'pixelate-app-de1e6.appspot.com';
+const bucketName = 'haus-of-pixels.appspot.com';
 const bucket = storage.bucket(bucketName);
 
 
@@ -317,6 +317,8 @@ module.exports.get_profile = async (req, res) => {
         .catch((error) => {
             console.error('Error fetching data:', error);
         });
+
+    // console.log(dataArray);
 
     res.render('profile', {
         pageTitle: 'Profile',
