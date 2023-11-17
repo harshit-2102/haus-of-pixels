@@ -9,12 +9,12 @@ const fs = require('fs');
 
 admin.initializeApp({
     credential: admin.credential.cert(credentials),
-    databaseURL: 'https://haus-of-pixels-default-rtdb.firebaseio.com/',
+    databaseURL: 'https://pixelate-app-e5126-default-rtdb.firebaseio.com/',
 });
 
 const storage = admin.storage();
 const db = admin.database();
-const bucketName = 'haus-of-pixels.appspot.com';
+const bucketName = 'pixelate-app-e5126.appspot.com';
 const bucket = storage.bucket(bucketName);
 
 
@@ -39,14 +39,11 @@ function generateUniqueId(length) {
     return uniqueId;
 }
 
-async function addDataToSpreadsheet(data) {
+async function addDataToFirebase(data) {
     // console.log(data);
-    const folderName = data.email.replace('@', '-').replace('.', '-');
+    const folderName = data.email.replaceAll('.', '--').replaceAll('@', '-');
     const exifData = JSON.parse(data.exifData);
     try {
-        const spreadsheetId = '1tUX5QR7Ap47r6iIfdDHZsm4p8UoYw7jbxzSGRyt_bsk'; // Replace with your Google Spreadsheet ID
-        const range = 'photos'; // Replace with the desired sheet and column
-
         client.authorize(async function (err) {
             if (err) {
                 console.error('Authentication failed:', err);
@@ -158,7 +155,7 @@ async function addDataToSpreadsheet(data) {
 
             const newData = {
                 id: uniqueId,
-                user: data.email.replace('@gmail.com', ''),
+                user: data.email,
                 imageUrl: imageUrl,
                 av: aperture.toFixed(5),
                 tv: exposerTime.toFixed(5),
@@ -205,14 +202,14 @@ async function accessSpreadsheet() {
         // console.log(values);
         const data = values.map((value) => ({
             title: value[0],
-            count: value[9] || 0,
+            count: value[8] || 0,
             stdDv: value[5],
             desiredMean: value[6] || 0,
-            utilityTokensLocked: value[8] || 0,
-            avgPrice: value[8] / value[9] || 0
+            utilityTokensLocked: value[7] || 0,
+            avgPrice: value[7] / value[8] || 0
         }))
 
-        // console.log(data);
+        console.log(data);
 
         db.ref(`/hashtags`).set(data);
 
@@ -221,6 +218,8 @@ async function accessSpreadsheet() {
         console.error('Error:', error);
     }
 }
+
+// accessSpreadsheet()
 
 async function fetchHashtagValues() {
     const hashtagValues = {};
@@ -243,7 +242,7 @@ function calculateTotalSellingPrice(photoEV, hashtagsData) {
                             const data = childSnapshot.val();
                             const hashEV = data.desiredMean;
                             const diffEV = hashEV - photoEV;
-                            const rating = Math.max(1, 100 - Math.abs(diffEV) / data.stdDv);
+                            const rating = Math.max(1, 100 - (Math.abs(diffEV) / data.stdDv));
                             const averagePrice = data.avgPrice;
                             sellingPrice += averagePrice / rating;
                         });
@@ -300,7 +299,7 @@ module.exports.get_dashboard = (req, res) => {
 module.exports.get_profile = async (req, res) => {
     const user = res.locals.user;
     const email = user.email;
-    const folderName = email.replace('@', '-').replace('.', '-');
+    const folderName = email.replaceAll('.', '--').replace('@', '-');
     const dataArray = [];
     const usersRef = db.ref(`users/${folderName}`);
     await usersRef.once('value')
@@ -339,7 +338,7 @@ module.exports.post_upload = async (req, res) => {
     const email = user.email;
 
     // Store the file in Firebase Storage
-    const folderName = email.replace('@', '-').replace('.', '-');
+    const folderName = email.replaceAll('.', '--').replaceAll('@', '-');
     const fileName = Date.now() + '-' + file.originalname.replaceAll('.', '-');
     const fileRef = bucket.file(folderName + fileName);
     const imageUrl = await fileRef.getSignedUrl({ action: 'read', expires: '01-01-2030' });
@@ -347,8 +346,6 @@ module.exports.post_upload = async (req, res) => {
     const hashtagsList = hashtags.map((item) => {
         return item.replace('#', '').replaceAll(' ', '').replaceAll('\n', '');
     })
-
-
 
     sharp(file.buffer)
         .resize({ width: 300 }) // Adjust the dimensions as needed
@@ -379,7 +376,7 @@ module.exports.post_upload = async (req, res) => {
                     email: email
                 }
 
-                addDataToSpreadsheet(data);
+                addDataToFirebase(data);
 
                 res.redirect('/dashboard');
             });
@@ -409,7 +406,7 @@ module.exports.post_uploadMultiple = async (req, res) => {
 
     for (const file of files) {
         // Store the file in Firebase Storage
-        const folderName = email.replace('@', '-').replace('.', '-');
+        const folderName = email.replaceAll('.', '--').replaceAll('@', '-');
         const fileName = Date.now() + '-' + file.originalname.replaceAll('.', '-');
         const fileRef = bucket.file(folderName + fileName);
         const imageUrl = await fileRef.getSignedUrl({ action: 'read', expires: '01-01-2030' });
@@ -443,8 +440,7 @@ module.exports.post_uploadMultiple = async (req, res) => {
                         email: email
                     }
 
-                    addDataToSpreadsheet(data);
-
+                    addDataToFirebase(data);
 
                 });
 
@@ -465,7 +461,7 @@ module.exports.post_uploadMultiple = async (req, res) => {
 exports.get_postData = async (req, res) => {
     const user = res.locals.user;
     const email = user.email;
-    const folderName = email.replace('@', '-').replace('.', '-');
+    const folderName = email.replaceAll('.', '--').replaceAll('@', '-');
     const dataArray = [];
     const usersRef = db.ref(`users/${folderName}`);
     await usersRef.once('value')
@@ -502,7 +498,7 @@ module.exports.get_adminDashboard = async (req, res) => {
         console.error('Error retrieving document names:', error);
     });
 
-    const users = documentNames.map((user) => user.replace('-gmail-com', ''));
+    const users = documentNames.map((user) => user.replaceAll('--', '.').replace('-', '@'));
 
     const totalImages = [];
     for (let user of documentNames) {

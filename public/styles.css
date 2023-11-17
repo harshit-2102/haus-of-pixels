@@ -1,57 +1,77 @@
 /* google fonts */
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
-body{
+body {
   margin: 20px 40px;
   font-size: 1.2rem;
   letter-spacing: 1px;
   background: #fafafa;
 }
-h1, h2, h3, h4, ul, li, a, p, input, label, button, footer{
+
+h1,
+h2,
+h3,
+h4,
+ul,
+li,
+a,
+p,
+input,
+label,
+button,
+footer {
   margin: 0;
   padding: 0;
   font-family: 'Quicksand', sans-serif;
   color: #444;
 }
-ul{
+
+ul {
   list-style-type: none;
 }
-a{
+
+a {
   text-decoration: none;
 }
-.btn{
+
+.btn {
   border-radius: 36px;
   background: #FEE996;
 }
-form h2{
+
+/* form h2 {
   font-size: 2.4em;
   font-weight: 900;
-  margin-bottom: 40px;
-}
-form{
-  width: 360px;
+  margin-bottom: 20px;
+} */
+
+form {
+  max-width: 360px;
   margin: 0 auto;
   padding: 30px;
-  box-shadow: 1px 2px 3px rgba(0,0,0,0.1);
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   background: white;
 }
-input{
+
+input {
   padding: 10px 12px;
   border-radius: 4px;
   border: 1px solid #ddd;
   font-size: 1em;
   width: 100%;
 }
-label{
+
+label {
   display: block;
   margin: 20px 0 10px;
 }
-button{
+
+button {
   margin-top: 30px;
   border-radius: 36px;
   background: #FEE996;
-  border:0;
+  border: 0;
   text-transform: uppercase;
   font-weight: 700;
   font-size: 0.8em;
@@ -59,31 +79,37 @@ button{
   padding: 10px 16px;
   letter-spacing: 2px;
 }
-.error{
+
+.error {
   color: #ff0099;
   margin: 10px 2px;
   font-size: 0.8em;
   font-weight: bold;
 }
-header{
+
+header {
   display: flex;
   align-items: center;
 }
-header img{
+
+header img {
   width: 250px;
   margin-right: 40px;
 }
-header h2{
+
+header h2 {
   font-size: 3em;
   margin-bottom: 10px;
 }
-header h3{
+
+header h3 {
   font-size: 1.6em;
   margin-bottom: 10px;
   margin-left: 2px;
   color: #999;
 }
-header .btn{
+
+header .btn {
   margin-top: 20px;
   padding: 12px 18px;
   text-transform: uppercase;
@@ -91,7 +117,8 @@ header .btn{
   display: inline-block;
   font-size: 0.8em;
 }
-.recipes{
+
+.recipes {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   column-gap: 30px;
@@ -99,7 +126,8 @@ header .btn{
   margin: 80PX AUTO;
   max-width: 1200px;
 }
-.recipe{
+
+.recipe {
   display: inline-block;
   border-radius: 20px;
   background: white;
@@ -107,32 +135,41 @@ header .btn{
   text-align: center;
   padding: 0 20px 30px 20px
 }
-.recipe img{
+
+.recipe img {
   width: 100px;
   margin: -30px auto 20px;
 }
-footer{
+
+footer {
   text-align: center;
-  margin-top: 120px;
+  margin-top: 40px;
   color: #aaa;
 }
 
-.hashtag-dropdown {
-  width: 10rem;
-  height: 20rem;
-  border: 1px solid #ccc;
+.fetched-img {
+  height: 200px;
+  width: 200px;
+}
+
+.hashtag-dropdown,
+.hashtag-dropdown-multiple {
+  width: auto;
+  /* height: 20rem; */
   position: relative;
   overflow: hidden;
 }
 
-.selected-hashtags {
+.selected-hashtags,
+.selected-hashtags-multiple {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
   padding: 8px;
 }
 
-.selected-hashtag {
+.selected-hashtag,
+.selected-hashtag-multiple {
   background-color: #007bff;
   color: #fff;
   padding: 4px 8px;
@@ -140,27 +177,48 @@ footer{
   cursor: pointer;
 }
 
-#hashtag-input {
-  width: 100%;
-  border: none;
-  padding: 8px;
-  font-size: 14px;
-  outline: none;
-}
-
-.hashtag-list {
+.hashtag-list,
+.hashtag-list-multiple {
+  /* display: none; */
   list-style: none;
   padding: 0;
   max-height: 200px;
   overflow-y: auto;
 }
 
-.hashtag-list li {
+.hashtag-list li,
+.hashtag-list-multiple li {
   padding: 8px;
   cursor: pointer;
 }
 
-.hashtag-list li:hover {
+.hashtag-list li:hover,
+.hashtag-dropdown li:hover {
   background-color: #f0f0f0;
 }
 
+.profile-images {
+  width: 100%;
+  height: 9rem;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.admin-user-table{
+  max-height: 60vh;  
+  overflow-y: auto;
+}
+
+@media only screen and (min-width: 1200px) {
+  .profile-images {
+    height: 12rem;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .profile-images {
+    height: 12rem;
+  }
+}
