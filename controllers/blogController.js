@@ -244,7 +244,7 @@ function calculateTotalSellingPrice(photoEV, hashtagsData) {
                             const diffEV = hashEV - photoEV;
                             const rating = Math.max(1, 100 - (Math.abs(diffEV) / data.stdDv));
                             const averagePrice = data.avgPrice;
-                            sellingPrice += averagePrice / rating;
+                            sellingPrice += (averagePrice * rating)/100;
                         });
                         resolve(sellingPrice);
                     })
@@ -646,15 +646,26 @@ async function updateHashtagCount(hashtag, count) {
                     count: newCount.toString()
                 });
 
+                const newAvg = parseInt(childSnapshot.val().utilityTokensLocked) / newCount;
+                // Update the Average field
+                childSnapshot.ref.update({
+                    avgPrice: newAvg.toString()
+                });
+
                 const prev = parseInt(currentCount / 100);
                 const x = parseInt(newCount / 100);
                 const diff = x - prev;
-                
+
                 if (diff) {
                     const currentTokens = parseFloat(childSnapshot.val().utilityTokensLocked) || 0;
-                    const newTokens = currentTokens + diff*10000;
+                    const newTokens = currentTokens + diff * 10000;
                     childSnapshot.ref.update({
                         utilityTokensLocked: newTokens.toString()
+                    });
+                    const newAverage = newTokens / newCount;
+                    // Update the Average field
+                    childSnapshot.ref.update({
+                        avgPrice: newAverage.toString()
                     });
                 }
             })
